@@ -6,10 +6,12 @@ from tester import tester
 class MachineLearningCoordinator:
     """ Coordinates spreadsheet, trainer and tester classes to execute a machine learning algorithm """
 
-    def __init__(self):
+    def __init__(self, test_iterations: int):
         self._spreadsheet: spreadsheet.Spreadsheet = None
         self._trainer: trainer.Trainer = None
         self._tester: tester.Tester = None
+        self._test_iterations: int = test_iterations
+        self._results = list()
 
     def set_spreadsheet(self, ss: spreadsheet.Spreadsheet) -> None:
         self._spreadsheet = ss
@@ -34,10 +36,16 @@ class MachineLearningCoordinator:
             return 'No algorithm set'
 
         self._spreadsheet.read()
-        model_description_input = self._spreadsheet.retrieve_data()
+        training_set = self._spreadsheet.retrieve_training_set()
 
-        self._trainer.train(model_description_input)
+        self._trainer.train(training_set)
         model_description = self._trainer.retrieve_model_description()
 
-        self._tester.test(model_description)
-        return self._tester.retrieve_test_output()
+        for _ in range(self._test_iterations):
+            test_set = self._spreadsheet.retrieve_test_set()
+            self._tester.test(model_description, test_set)
+
+            result = self._tester.retrieve_test_output()
+            self._results.append(result)
+
+        return self._results

@@ -6,10 +6,15 @@ class Spreadsheet(ABC):
 
     @abstractmethod
     def read(self):
-        """  """
+        """ Reads spreadsheet and parses data """
         pass
 
     @abstractmethod
-    def retrieve_data(self):
-        """ Returns data formatted according to the algorithm to be used """
+    def retrieve_test_set(self):
+        """ Randomizes data and returns the 30% of the total dataset """
+        pass
+
+    @abstractmethod
+    def retrieve_training_set(self):
+        """ Randomizes data and returns the 70% of the total dataset """
         pass
