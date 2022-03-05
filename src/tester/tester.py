@@ -5,8 +5,8 @@ class Tester(ABC):
     """ Tests a given description model """
 
     @abstractmethod
-    def test(self):
-        """Main test method"""
+    def test(self, model_description):
+        """ Main test method """
         pass
 
     @abstractmethod

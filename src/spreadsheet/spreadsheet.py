@@ -6,6 +6,7 @@ class Spreadsheet(ABC):
 
     @abstractmethod
     def read(self):
+        """  """
         pass
 
     @abstractmethod
