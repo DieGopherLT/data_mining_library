@@ -10,15 +10,15 @@ class ZeroRSpreadsheet(Spreadsheet):
 		self.target_column: str = None
 		self._randomized_parsed_dataset: pd.Series = None
 
-	def is_dataset_set(self):
+	def is_dataset_set(self) -> bool:
 		""" Checks if dataset attribute is set """
 		return True if self._dataset is not None else False
 
-	def is_target_set(self):
+	def is_target_set(self) -> bool:
 		""" Checks if target_column attribute is set """
 		return True if self.target_column is not None else False
 	
-	def is_target_column_ok(self):
+	def is_target_column_ok(self) -> bool:
 		""" Checks if target_column is a valid column of the dataset """
 		column_names = list(self._dataset)	
 		return True if self.target_column in column_names else False
@@ -27,15 +27,16 @@ class ZeroRSpreadsheet(Spreadsheet):
 		""" Sets the column that would be the target to analyzed by the algorithm """
 		self.target_column = tc
 
-	def get_percentage(self, percent):
+	def get_percentage(self, percent) -> int:
+		""" Counts the total values and returns the number of items given a percentage """
 		total_values = len(self._parsed_dataset)
 		return int(total_values*percent)
 
-	def parse_data(self) -> pd.Series:
+	def parse_data(self):
 		""" Parses target column ready to be passed to Trainer class """ 
 		self._parsed_dataset = self._dataset[self.target_column].squeeze()	
 	
-	def randomize_dataset(self) -> pd.Series:
+	def randomize_dataset(self):
 		""" Uses dataset to create a randomized one """
 		numpy_dataset_series = self._parsed_dataset.to_numpy()
 		np.random.shuffle(numpy_dataset_series)
@@ -60,7 +61,6 @@ class ZeroRSpreadsheet(Spreadsheet):
 		number_of_values = self.get_percentage(0.30)
 
 		test_set = self._randomized_parsed_dataset[:number_of_values]
-
 		return test_set
 			
 	def retrieve_training_set(self) -> pd.Series:
