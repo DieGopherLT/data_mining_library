@@ -1,6 +1,6 @@
-from spreadsheet import spreadsheet
-from trainer import trainer
-from tester import tester
+from .spreadsheet import spreadsheet
+from .trainer import trainer
+from .tester import tester
 
 
 class MachineLearningCoordinator:
