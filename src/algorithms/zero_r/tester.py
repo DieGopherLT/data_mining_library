@@ -4,9 +4,17 @@ from src.tester.tester import Tester
 
 
 class ZeroRTester(Tester):
-    def test(self, model_description: dict, test_set: pd.Series):
+    def __init__(self):
+        self._model_description = ""
+        self._result = {}
 
-        pass
+    def test(self, model_description: str, test_set: pd.Series):
+        self._model_description = model_description
+        asserts = test_set.apply(self.asserts_fun)
+        self._result = asserts.value_counts().to_dict()
 
     def retrieve_test_output(self):
-        pass
+        return self._result
+
+    def asserts_fun(self, x):
+        return "Succeed" if x == self._model_description else "FAIL"
