@@ -36,6 +36,15 @@ class ZeroRSpreadsheet(Spreadsheet):
 		""" Parses target column ready to be passed to Trainer class """ 
 		self._parsed_dataset = self._dataset[self.target_column].squeeze()	
 	
+	def clean_data(self):
+		""" Does a cleansing process for target column """
+		def whitespaces_cleansing(df: pd.DataFrame, tg: str):
+			""" Removes whitespaces before and after the attribute within the target column """
+			df[tg] = df[tg].astype(str).apply(lambda attr: attr.strip())	
+
+		print(f'Target column: < {self.target_column} > is being cleansed...')
+		whitespaces_cleansing(self._dataset, self.target_column)
+
 	def randomize_dataset(self):
 		""" Uses dataset to create a randomized one """
 		numpy_dataset_series = self._parsed_dataset.to_numpy()
@@ -53,6 +62,7 @@ class ZeroRSpreadsheet(Spreadsheet):
 		if self.is_target_column_ok() is not True:
 			return 'target column not found in the column names of the dataset'
 
+		self.clean_data()
 		self.parse_data()
 
 	def retrieve_test_set(self) -> pd.Series:
