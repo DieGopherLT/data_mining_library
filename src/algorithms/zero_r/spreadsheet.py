@@ -53,7 +53,15 @@ class ZeroRSpreadsheet(Spreadsheet):
 
 	def read(self):
 		""" Reads excel file and parses dataframe for retrieving methods """
-		self._dataset = pd.read_excel(self._file_name)
+		def read_file(file_name: str):
+			file_extension = file_name.split('.')[-1]
+
+			if file_extension == 'csv':
+				return pd.read_csv(file_name)
+			if file_extension == 'xlsx':
+				return pd.read_excel(file_name)
+
+		self._dataset = read_file(self._file_name)
 
 		if self.is_dataset_set() is not True:
 			return 'dataset is not set'
