@@ -8,7 +8,6 @@ class ZeroRSpreadsheet(Spreadsheet):
 		self._dataset: pd.DataFrame = None
 		self._parsed_dataset: pd.Series = None
 		self.target_column: str = None
-		self._randomized_parsed_dataset: pd.Series = None
 
 	def is_dataset_set(self) -> bool:
 		""" Checks if dataset attribute is set """
@@ -45,11 +44,11 @@ class ZeroRSpreadsheet(Spreadsheet):
 		print(f'Target column: < {self.target_column} > is being cleansed...')
 		whitespaces_cleansing(self._dataset, self.target_column)
 
-	def randomize_dataset(self):
+	def randomize_dataset(self, df: pd.Series) -> pd.Series:
 		""" Uses dataset to create a randomized one """
-		numpy_dataset_series = self._parsed_dataset.to_numpy()
+		numpy_dataset_series = df.to_numpy()
 		np.random.shuffle(numpy_dataset_series)
-		self._randomized_parsed_dataset = pd.Series(numpy_dataset_series)
+		return pd.Series(numpy_dataset_series)
 
 	def read(self):
 		""" Reads excel file and parses dataframe for retrieving methods """
@@ -67,17 +66,15 @@ class ZeroRSpreadsheet(Spreadsheet):
 
 	def retrieve_test_set(self) -> pd.Series:
 		""" Returns the 30% of the randomized parsed dataset """
-		self.randomize_dataset()
 		number_of_values = self.get_percentage(0.30)
 
-		test_set = self._randomized_parsed_dataset[:number_of_values]
-		return test_set
+		test_set = self._parsed_dataset[:number_of_values]
+		return self.randomize_dataset(test_set)
 			
 	def retrieve_training_set(self) -> pd.Series:
 		""" Returns the 70% of the randomized parsed dataset """
-		self.randomize_dataset()
 		number_of_values = self.get_percentage(0.70)	
 
-		training_set = self._randomized_parsed_dataset[:number_of_values]
+		training_set = self._parsed_dataset[number_of_values:]
 
-		return training_set
+		return self.randomize_dataset(training_set)
