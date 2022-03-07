@@ -6,6 +6,7 @@ class OneRSpreadsheet(Spreadsheet):
 	def __init__(self, fn):
 		self._file_name: str = fn
 		self._dataset: pd.DataFrame = None
+		self._randomized_dataset: pd.DataFrame = None
 	
 	def is_dataset_set(self):
 		""" Checks if dataset attribute is set """
@@ -29,12 +30,12 @@ class OneRSpreadsheet(Spreadsheet):
 		print('Dataframe is being cleansed')
 		whitespaces_cleansing(self._dataset)
 
-	def randomize_dataset(self, df: pd.DataFrame) -> pd.DataFrame:
+	def randomize_dataset(self):
 		""" Uses dataset to generate a randomized one """
-		column_names = list(df)
-		numpy_dataset = df.to_numpy()
+		column_names = list(self._dataset)
+		numpy_dataset = self._dataset.to_numpy()
 		np.random.shuffle(numpy_dataset)
-		return pd.DataFrame(numpy_dataset, columns=column_names)
+		self._randomized_dataset = pd.DataFrame(numpy_dataset, columns=column_names)
 
 	def read(self):
 		""" Reads excel file and parses dataframe for retrieving methods """
@@ -55,15 +56,19 @@ class OneRSpreadsheet(Spreadsheet):
 		self.clean_data()
 		
 	def retrieve_test_set(self) -> pd.DataFrame:
-		""" Returns the 30% of the dataset randomized """	
+		""" Returns the 30% of the randomized parsed dataset """	
+		self.randomize_dataset()	
 		number_of_values = self.get_percentage(0.30)
-		test_set = self._dataset[:number_of_values].copy()
 
-		return self.randomize_dataset(test_set) 
+		test_set = self._randomized_dataset[:number_of_values].copy()
+
+		return test_set
 
 	def retrieve_training_set(self) -> pd.DataFrame:
-		""" Returns the 70% of the dataset randomized """
+		""" Returns the 70% of the randomized parsed dataset """
+		self.randomize_dataset()
 		number_of_values = self.get_percentage(0.70)
-		training_set = self._dataset[number_of_values:].copy()
 
-		return self.randomize_dataset(training_set)
+		training_set = self.randomized_dataset[:number_of_values].copy()
+
+		return training_set
