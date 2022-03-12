@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
+
 from src.spreadsheet.spreadsheet import Spreadsheet
 from src.spreadsheet.reader import SpreadsheetReader
 from src.spreadsheet.cleaner import SpreadsheetCleaner
+
+from src.spreadsheet.exception import SpreadsheetNotSetError
 
 class OneRSpreadsheet(Spreadsheet):
 	def __init__(self, file:str, reader: SpreadsheetReader, cleaner: SpreadsheetCleaner):
@@ -43,7 +46,7 @@ class OneRSpreadsheet(Spreadsheet):
 
 		# probably this is redundant
 		if self.is_dataset_set() is not True: 
-			return 'dataset is not set' # Exception FileNotFoundError
+			SpreadsheetNotSetError()
 		
 		self.clean_data()
 		

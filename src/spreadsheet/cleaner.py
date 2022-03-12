@@ -9,6 +9,7 @@ class SpreadsheetCleaner:
 		return dataframe
 
 	def clean_whitespaces(self, dataframe: pd.DataFrame):
+		""" Cleans whitespaces the dataset """
 		columns = list(dataframe)
 		df = dataframe.copy()
 

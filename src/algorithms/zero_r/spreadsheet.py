@@ -5,6 +5,8 @@ from src.spreadsheet.spreadsheet import Spreadsheet
 from src.spreadsheet.reader import SpreadsheetReader
 from src.spreadsheet.cleaner import SpreadsheetCleaner
 
+from src.spreadsheet.exception import SpreadsheetNotSetError, TargetColumnNotFoundError, TargetColumnError
+
 class ZeroRSpreadsheet(Spreadsheet):
 	def __init__(self, file: str, reader: SpreadsheetReader, cleaner: SpreadsheetCleaner):
 		self.__reader: SpreadsheetReader = reader
@@ -61,11 +63,11 @@ class ZeroRSpreadsheet(Spreadsheet):
 		self._dataset = self.__reader.read_file(self._file_name)
 
 		if self.is_dataset_set() is not True:
-			return 'dataset is not set'
+			SpreadsheetNotSetError()
 		if self.is_target_set() is not True:
-			return 'target column is not set'
+			TargetColumnError()
 		if self.is_target_column_ok() is not True:
-			return 'target column not found in the column names of the dataset'
+			TargetColumnNotFoundError()
 
 		self.clean_data()
 		self.parse_data()
