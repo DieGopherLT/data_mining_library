@@ -1,12 +1,18 @@
 import pandas as pd
 import numpy as np
 from src.spreadsheet.spreadsheet import Spreadsheet
+from src.spreadsheet.reader import SpreadsheetReader
+from src.spreadsheet.cleaner import SpreadsheetCleaner
 
 class OneRSpreadsheet(Spreadsheet):
-	def __init__(self, fn):
+	def __init__(self, file:str, reader: SpreadsheetReader, cleaner: SpreadsheetCleaner):
 		self._file_name: str = fn
+		
 		self._dataset: pd.DataFrame = None
 		self._randomized_dataset: pd.DataFrame = None
+
+		self.__reader = reader
+		self.__cleaner = cleaner
 	
 	def is_dataset_set(self):
 		""" Checks if dataset attribute is set """
@@ -19,16 +25,9 @@ class OneRSpreadsheet(Spreadsheet):
 	
 	def clean_data(self):
 		""" Does a cleansing process in the whole dataframe """
-		def whitespaces_cleansing(df: pd.DataFrame):
-			""" Removes whitespaces before and after the attribute for every column attributes """
-			column_names = list(df)
-			for column_name in column_names:
-				df[column_name] = df[column_name].astype(str).apply(
-					lambda attr: attr.strip()
-				)
 
 		print('Dataframe is being cleansed')
-		whitespaces_cleansing(self._dataset)
+		self._dataset = self.__cleaner.clean(self._dataset)
 
 	def randomize_dataset(self):
 		""" Uses dataset to generate a randomized one """
@@ -39,19 +38,12 @@ class OneRSpreadsheet(Spreadsheet):
 
 	def read(self):
 		""" Reads excel file and parses dataframe for retrieving methods """
-		def read_file(file_name: str):
-			file_extension = file_name.split('.')[-1]
-
-			if file_extension == 'csv':
-				return pd.read_csv(file_name)
-			if file_extension == 'xlsx':
-				return pd.read_excel(file_name)
-
-		self._dataset = read_file(self._file_name)
+		
+		self._dataset = self.__reader.read_file(self._file_name)
 
 		# probably this is redundant
 		if self.is_dataset_set() is not True: 
-			return 'dataset is not set'
+			return 'dataset is not set' # Exception FileNotFoundError
 		
 		self.clean_data()
 		
