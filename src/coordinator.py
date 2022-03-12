@@ -22,17 +22,17 @@ class MachineLearningCoordinator:
     def set_tester(self, tst: tester.Tester) -> None:
         self._tester = tst
 
-    def execute_algorithm(self):
-        def is_algorithm_set():
-            if type(self._spreadsheet) is None:
-                return False
-            if type(self._trainer) is None:
-                return False
-            if type(self._tester) is None:
-                return False
-            return True
+    def __is_algorithm_set(self):
+        if type(self._spreadsheet) is None:
+            return False
+        if type(self._trainer) is None:
+            return False
+        if type(self._tester) is None:
+            return False
+        return True
 
-        if not is_algorithm_set():
+    def execute_algorithm(self):
+        if not self.__is_algorithm_set():
             return 'No algorithm set'
 
         self._spreadsheet.read()
