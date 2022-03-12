@@ -1,8 +1,16 @@
+from enum import Enum
+
 from src.coordinator import MachineLearningCoordinator
 
 from src.algorithms.zero_r.spreadsheet import ZeroRSpreadsheet
 from src.algorithms.zero_r.trainer import ZeroRTrainer
 from src.algorithms.zero_r.tester import ZeroRTester
+
+
+class Algorithms(Enum):
+    ZeroR = 1
+    OneR = 2
+    NaiveBayes = 3
 
 
 def main():
@@ -12,15 +20,19 @@ def main():
 
     director = MachineLearningCoordinator(iterations)
 
-    if algorithm == 1:
-        target_column = input('\nInsert target column: ')
-        spreadsheet = ZeroRSpreadsheet(f'data/{file_name}')
-        spreadsheet.set_target_column(target_column)
+    match algorithm:
+        case Algorithms.ZeroR:
+            target_column = input('\nInsert target column: ')
+            spreadsheet = ZeroRSpreadsheet(f'data/{file_name}')
+            spreadsheet.set_target_column(target_column)
 
-        director.set_spreadsheet(spreadsheet)
-        director.set_trainer(ZeroRTrainer())
-        director.set_tester(ZeroRTester())
+            director.set_spreadsheet(spreadsheet)
+            director.set_trainer(ZeroRTrainer())
+            director.set_tester(ZeroRTester())
 
-        print(director.execute_algorithm())
+            print(director.execute_algorithm())
+            
+        case Algorithms.OneR:
+            print('\nEl Lunes sin falta carnal')
 
 main()
