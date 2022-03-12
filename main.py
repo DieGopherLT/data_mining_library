@@ -6,6 +6,8 @@ from src.algorithms.zero_r.spreadsheet import ZeroRSpreadsheet
 from src.algorithms.zero_r.trainer import ZeroRTrainer
 from src.algorithms.zero_r.tester import ZeroRTester
 
+from src.spreadsheet.cleaner import SpreadsheetCleaner
+from src.spreadsheet.reader import SpreadsheetReader
 
 class Algorithms(Enum):
     ZeroR = 1
@@ -23,7 +25,7 @@ def main():
     match algorithm:
         case Algorithms.ZeroR.value:
             target_column = input('\nInsert target column: ')
-            spreadsheet = ZeroRSpreadsheet(f'data/{file_name}')
+            spreadsheet = ZeroRSpreadsheet(f'data/{file_name}', SpreadsheetReader(), SpreadsheetCleaner())
             spreadsheet.set_target_column(target_column)
 
             director.set_spreadsheet(spreadsheet)

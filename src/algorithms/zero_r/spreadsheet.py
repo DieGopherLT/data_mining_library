@@ -1,13 +1,20 @@
 import pandas as pd
 import numpy as np
+
 from src.spreadsheet.spreadsheet import Spreadsheet
+from src.spreadsheet.reader import SpreadsheetReader
+from src.spreadsheet.cleaner import SpreadsheetCleaner
 
 class ZeroRSpreadsheet(Spreadsheet):
-	def __init__(self, fn):
-		self._file_name: str = fn 
+	def __init__(self, file: str, reader: SpreadsheetReader, cleaner: SpreadsheetCleaner):
+		self.__reader: SpreadsheetReader = reader
+		self.__cleaner: SpreadsheetCleaner = cleaner
+
+		self._file_name: str = file
+		self._target_column: str = None
+
 		self._dataset: pd.DataFrame = None
 		self._parsed_dataset: pd.Series = None
-		self.target_column: str = None
 		self._randomized_parsed_dataset: pd.Series = None
 
 	def is_dataset_set(self) -> bool:
@@ -38,12 +45,9 @@ class ZeroRSpreadsheet(Spreadsheet):
 	
 	def clean_data(self):
 		""" Does a cleansing process for target column """
-		def whitespaces_cleansing(df: pd.DataFrame, tg: str):
-			""" Removes whitespaces before and after the attribute within the target column """
-			df[tg] = df[tg].astype(str).apply(lambda attr: attr.strip())	
 
 		print(f'Target column: < {self.target_column} > is being cleansed...')
-		whitespaces_cleansing(self._dataset, self.target_column)
+		self._dataset = self.__cleaner.clean(self._dataset)
 
 	def randomize_dataset(self):
 		""" Uses dataset to create a randomized one """
@@ -53,15 +57,8 @@ class ZeroRSpreadsheet(Spreadsheet):
 
 	def read(self):
 		""" Reads excel file and parses dataframe for retrieving methods """
-		def read_file(file_name: str):
-			file_extension = file_name.split('.')[-1]
 
-			if file_extension == 'csv':
-				return pd.read_csv(file_name)
-			if file_extension == 'xlsx':
-				return pd.read_excel(file_name)
-
-		self._dataset = read_file(self._file_name)
+		self._dataset = self.__reader.read_file(self._file_name)
 
 		if self.is_dataset_set() is not True:
 			return 'dataset is not set'
