@@ -9,7 +9,7 @@ from src.spreadsheet.exception import SpreadsheetNotSetError
 
 class OneRSpreadsheet(Spreadsheet):
 	def __init__(self, file:str, reader: SpreadsheetReader, cleaner: SpreadsheetCleaner):
-		self._file_name: str = fn
+		self._file_name: str = file
 		
 		self._dataset: pd.DataFrame = None
 		self._randomized_dataset: pd.DataFrame = None
@@ -64,6 +64,6 @@ class OneRSpreadsheet(Spreadsheet):
 		self.randomize_dataset()
 		number_of_values = self.get_percentage(0.70)
 
-		training_set = self.randomized_dataset[:number_of_values].copy()
+		training_set = self._randomized_dataset[:number_of_values].copy()
 
 		return training_set
