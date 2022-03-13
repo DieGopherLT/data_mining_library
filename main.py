@@ -6,8 +6,13 @@ from src.algorithms.zero_r.spreadsheet import ZeroRSpreadsheet
 from src.algorithms.zero_r.trainer import ZeroRTrainer
 from src.algorithms.zero_r.tester import ZeroRTester
 
+from src.algorithms.one_r.spreadsheet import OneRSpreadsheet
+from src.algorithms.one_r.trainer import OneRTrainer
+from src.algorithms.one_r.tester import OneRTester
+
 from src.spreadsheet.cleaner import SpreadsheetCleaner
 from src.spreadsheet.reader import SpreadsheetReader
+
 
 class Algorithms(Enum):
     ZeroR = 1
@@ -22,22 +27,31 @@ def main():
 
     director = MachineLearningCoordinator(iterations)
 
-    match algorithm:
-        case Algorithms.ZeroR.value:
-            target_column = input('\nInsert target column: ')
-            spreadsheet = ZeroRSpreadsheet(f'data/{file_name}', SpreadsheetReader(), SpreadsheetCleaner())
-            spreadsheet.set_target_column(target_column)
+    if algorithm == Algorithms.ZeroR.value:
+        target_column = input('\nInsert target column: ')
 
-            director.set_spreadsheet(spreadsheet)
-            director.set_trainer(ZeroRTrainer())
-            director.set_tester(ZeroRTester())
+        spreadsheet = ZeroRSpreadsheet(f'data/{file_name}', SpreadsheetReader(), SpreadsheetCleaner())
+        spreadsheet.set_target_column(target_column)
 
-            print(director.execute_algorithm())
-            
-        case Algorithms.OneR.value:
-            print('\nEl Lunes sin falta carnal')
-            
-        case Algorithms.NaiveBayes.value:
-            print('\nAlgun dia...')
+        director.set_spreadsheet(spreadsheet)
+        director.set_trainer(ZeroRTrainer())
+        director.set_tester(ZeroRTester())
+
+        print(director.execute_algorithm())
+
+    elif algorithm == Algorithms.OneR.value:
+        target_column = input('\nInsert target column: ')
+
+        spreadsheet = OneRSpreadsheet(f'data/{file_name}', SpreadsheetReader(), SpreadsheetCleaner())
+
+        director.set_spreadsheet(spreadsheet)
+        director.set_trainer(OneRTrainer(target_column))
+        director.set_tester(OneRTester())
+
+        print(director.execute_algorithm())
+
+    elif algorithm == Algorithms.NaiveBayes.value:
+        print('\nAlgun dia...')
+
 
 main()
