@@ -1,6 +1,7 @@
 from enum import Enum
 
 from src.selectors.file.explorer import FileExplorer
+from src.selectors.target_column.selector import TargetColumnSelector
 
 from src.coordinator import MachineLearningCoordinator
 
@@ -30,7 +31,7 @@ def main():
     director = MachineLearningCoordinator(iterations)
 
     if algorithm == Algorithms.ZeroR.value:
-        target_column = input('\nInsert target column: ')
+        target_column = TargetColumnSelector().select_target_column_in(file_name, 3)
 
         spreadsheet = ZeroRSpreadsheet(file_name, SpreadsheetReader(), SpreadsheetCleaner())
         spreadsheet.set_target_column(target_column)
@@ -42,7 +43,7 @@ def main():
         print(director.execute_algorithm())
 
     elif algorithm == Algorithms.OneR.value:
-        target_column = input('\nInsert target column: ')
+        target_column = TargetColumnSelector().select_target_column_in(file_name, 3)
 
         spreadsheet = OneRSpreadsheet(file_name, SpreadsheetReader(), SpreadsheetCleaner())
 
