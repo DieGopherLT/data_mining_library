@@ -31,9 +31,11 @@ def main():
     director = MachineLearningCoordinator(iterations)
 
     if algorithm == Algorithms.ZeroR.value:
-        target_column = TargetColumnSelector().select_target_column_in(file_name, 3)
+        reader = SpreadsheetReader()
+        
+        target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
 
-        spreadsheet = ZeroRSpreadsheet(file_name, SpreadsheetReader(), SpreadsheetCleaner())
+        spreadsheet = ZeroRSpreadsheet(file_name, reader, SpreadsheetCleaner())
         spreadsheet.set_target_column(target_column)
 
         director.set_spreadsheet(spreadsheet)
@@ -43,9 +45,11 @@ def main():
         print(director.execute_algorithm())
 
     elif algorithm == Algorithms.OneR.value:
-        target_column = TargetColumnSelector().select_target_column_in(file_name, 3)
+        reader = SpreadsheetReader()
+        
+        target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
 
-        spreadsheet = OneRSpreadsheet(file_name, SpreadsheetReader(), SpreadsheetCleaner())
+        spreadsheet = OneRSpreadsheet(file_name, reader, SpreadsheetCleaner())
 
         director.set_spreadsheet(spreadsheet)
         director.set_trainer(OneRTrainer(target_column))
