@@ -4,46 +4,52 @@ from src.trainer.trainer import Trainer
 
 class OneRTrainer(Trainer):
 
-    def __init__(self, tc: str):
-        self._target_column = tc
+    def __init__(self, target_column: str):
+        self._target_column = target_column
         self._model_description = dict()
         self._frequency_tables = list()
+        self._rules_to_prove = list()
 
     def train(self, spreadsheet: pd.DataFrame):
         self._frequency_tables = self.__generate_frequency_tables(spreadsheet)
         self.__generate_rules()
 
-    def __generate_frequency_tables(self, ss: pd.DataFrame) -> list:
+    def __generate_frequency_tables(self, spreadsheet: pd.DataFrame) -> list:
         frequency_tables = list()
-        for col in ss.columns:
-            if col == self._target_column:
+        for column in spreadsheet.columns:
+            if column == self._target_column:
                 continue
             frequency_table = {
-                col: ss[[col, self._target_column]].value_counts().to_dict()
+                column: spreadsheet[[column, self._target_column]].value_counts().to_dict()
             }
             frequency_tables.append(frequency_table)
         return frequency_tables
 
     def __generate_rules(self):
-        rules = dict()
-        for frequency_table in self._frequency_tables:
-            frequency_table_to_list = list(frequency_table.items())
-            sorted_values = sorted(frequency_table_to_list)
+        column_frequency_tables = self._frequency_tables.copy()
+        for column_frequency_table in column_frequency_tables:
+            column = list(column_frequency_table)[0]
+            frequency_table = column_frequency_table[column].items()
 
-            column = sorted_values[0][0]
-            children_dict = sorted_values[0][1]
+            rules = dict()
+            last_frequency = 0
 
-            rules[column] = dict()
-            visited = list()
+            for [column_value, target_column_value], frequency in frequency_table:
+                if column_value not in rules:
+                    rules[column_value] = target_column_value
+                    last_frequency = frequency
+                elif frequency > last_frequency:
+                    """
+                    Just in case that the frequency is greater than the last frequency
+                    for the same column value the  **target column value** will be overwritten
+                    otherwise the first target column value with the greatest frequency remains
+                    as part of the rule. 
+                    """
+                    rules[column_value] = target_column_value
 
-            for tup in children_dict.items():
-                column_value = tup[0][0]
-                target_value = tup[0][1]
-                if column_value not in visited:
-                    visited.append(column_value)
-                    rules[column][column_value] = target_value
+            column_frequency_table[column] = rules
 
-        self._model_description = rules
+        self._rules_to_prove = column_frequency_tables
 
     def retrieve_model_description(self):
         return self._model_description
