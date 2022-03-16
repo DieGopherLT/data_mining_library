@@ -4,8 +4,8 @@ from src.trainer.trainer import Trainer
 
 class OneRTrainer(Trainer):
 
-    def __init__(self, tc: str):
-        self._target_column = tc
+    def __init__(self, target_column: str):
+        self._target_column = target_column
         self._model_description = dict()
         self._frequency_tables = list()
         self._rules_to_prove = list()
@@ -14,13 +14,13 @@ class OneRTrainer(Trainer):
         self._frequency_tables = self.__generate_frequency_tables(spreadsheet)
         self.__generate_rules()
 
-    def __generate_frequency_tables(self, ss: pd.DataFrame) -> list:
+    def __generate_frequency_tables(self, spreadsheet: pd.DataFrame) -> list:
         frequency_tables = list()
-        for col in ss.columns:
-            if col == self._target_column:
+        for column in spreadsheet.columns:
+            if column == self._target_column:
                 continue
             frequency_table = {
-                col: ss[[col, self._target_column]].value_counts().to_dict()
+                column: spreadsheet[[column, self._target_column]].value_counts().to_dict()
             }
             frequency_tables.append(frequency_table)
         return frequency_tables
