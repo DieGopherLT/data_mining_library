@@ -14,7 +14,6 @@ class FileExplorer:
 
 	def select_file_in(self, directory: str) -> str:
 		if not self.__is_directory(directory):
-
 			FileExplorerDirectoryError(directory)
 
 		files = self.__get_files(directory)
