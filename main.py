@@ -29,10 +29,9 @@ def main():
     file_name = FileExplorer().select_file_in('data/')
 
     director = MachineLearningCoordinator(iterations)
+    reader = SpreadsheetReader()
 
     if algorithm == Algorithms.ZeroR.value:
-        reader = SpreadsheetReader()
-        
         target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
 
         spreadsheet = ZeroRSpreadsheet(file_name, reader, SpreadsheetCleaner())
@@ -45,8 +44,6 @@ def main():
         print(director.execute_algorithm())
 
     elif algorithm == Algorithms.OneR.value:
-        reader = SpreadsheetReader()
-        
         target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
 
         spreadsheet = OneRSpreadsheet(file_name, reader, SpreadsheetCleaner())
