@@ -6,7 +6,7 @@ class FrequencyTableGenerator:
     def __init__(self, target_column: str):
         self._target_column = target_column
 
-    def generate(self, spreadsheet: pd.DataFrame):
+    def generate_with_target_column(self, spreadsheet: pd.DataFrame):
         frequency_tables = list()
         for column in spreadsheet.columns:
             if column == self._target_column:

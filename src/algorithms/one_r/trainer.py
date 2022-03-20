@@ -15,7 +15,7 @@ class OneRTrainer(Trainer):
         self._proven_rules = list()
 
     def train(self, spreadsheet: pd.DataFrame):
-        self._frequency_tables = self._frequency_table_generator.generate(spreadsheet)
+        self._frequency_tables = self._frequency_table_generator.generate_with_target_column(spreadsheet)
         self.__generate_rules()
         self.__calculate_columns_total_error(spreadsheet)
         self.__generate_model_description()
