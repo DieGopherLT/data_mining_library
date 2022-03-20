@@ -15,7 +15,8 @@ from src.algorithms.one_r.tester import OneRTester
 
 from src.spreadsheet.cleaner import SpreadsheetCleaner
 from src.spreadsheet.reader import SpreadsheetReader
-from src.spreadsheet.frequency_table import FrequencyTableGenerator
+
+from src.tables.frequency import FrequencyTableGenerator
 
 
 class Algorithms(Enum):

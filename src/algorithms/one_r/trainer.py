@@ -1,6 +1,6 @@
 import pandas as pd
 from src.trainer.trainer import Trainer
-from src.spreadsheet.frequency_table import FrequencyTableGenerator
+from src.tables.frequency import FrequencyTableGenerator
 
 
 class OneRTrainer(Trainer):
