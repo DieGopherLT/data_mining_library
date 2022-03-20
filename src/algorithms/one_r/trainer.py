@@ -1,32 +1,24 @@
 import pandas as pd
 from src.trainer.trainer import Trainer
+from src.spreadsheet.frequency_table import FrequencyTableGenerator
 
 
 class OneRTrainer(Trainer):
 
-    def __init__(self, target_column: str):
+    def __init__(self, target_column: str, frequency_table_generator: FrequencyTableGenerator):
         self._target_column = target_column
+        self._frequency_table_generator = frequency_table_generator
+
         self._model_description = dict()
         self._frequency_tables = list()
         self._rules_to_prove = list()
         self._proven_rules = list()
 
     def train(self, spreadsheet: pd.DataFrame):
-        self._frequency_tables = self.__generate_frequency_tables(spreadsheet)
+        self._frequency_tables = self._frequency_table_generator.generate(spreadsheet)
         self.__generate_rules()
         self.__calculate_columns_total_error(spreadsheet)
         self.__generate_model_description()
-
-    def __generate_frequency_tables(self, spreadsheet: pd.DataFrame) -> list:
-        frequency_tables = list()
-        for column in spreadsheet.columns:
-            if column == self._target_column:
-                continue
-            frequency_table = {
-                column: spreadsheet[[column, self._target_column]].value_counts().to_dict()
-            }
-            frequency_tables.append(frequency_table)
-        return frequency_tables
 
     def __generate_rules(self):
         column_frequency_tables = self._frequency_tables.copy()
