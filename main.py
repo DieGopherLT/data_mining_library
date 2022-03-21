@@ -3,7 +3,7 @@ from enum import Enum
 from src.selectors.file.explorer import FileExplorer
 from src.selectors.target_column.selector import TargetColumnSelector
 
-from src.coordinators.trainable_algorithms import TrainableAlgorithmsCoordinator
+from src.coordinators.trainable_algorithms.coordinator import TrainableAlgorithmsCoordinator
 
 from src.algorithms.zero_r.spreadsheet import ZeroRSpreadsheet
 from src.algorithms.zero_r.trainer import ZeroRTrainer
