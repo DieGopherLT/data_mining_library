@@ -1,6 +1,6 @@
 import pandas as pd
 from collections import Counter
-from src.trainer.trainer import Trainer
+from src.coordinators.trainable_algorithms.trainer.interface import Trainer
 
 
 class ZeroRTrainer(Trainer):

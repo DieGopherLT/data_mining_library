@@ -1,25 +1,25 @@
-from .spreadsheet import spreadsheet
-from .trainer import trainer
-from .tester import tester
+from src.spreadsheet import spreadsheet
+from .trainer.interface import Trainer
+from .tester.interface import Tester
 
 
-class MachineLearningCoordinator:
+class TrainableAlgorithmsCoordinator:
     """ Coordinates spreadsheet, trainer and tester classes to execute a machine learning algorithm """
 
     def __init__(self, test_iterations: int):
         self._spreadsheet: spreadsheet.Spreadsheet = None
-        self._trainer: trainer.Trainer = None
-        self._tester: tester.Tester = None
+        self._trainer: Trainer = None
+        self._tester: Tester = None
         self._test_iterations: int = test_iterations
         self._results = list()
 
     def set_spreadsheet(self, ss: spreadsheet.Spreadsheet) -> None:
         self._spreadsheet = ss
 
-    def set_trainer(self, tr: trainer.Trainer) -> None:
+    def set_trainer(self, tr: Trainer) -> None:
         self._trainer = tr
 
-    def set_tester(self, tst: tester.Tester) -> None:
+    def set_tester(self, tst: Tester) -> None:
         self._tester = tst
 
     def __is_algorithm_set(self):

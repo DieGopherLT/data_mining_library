@@ -3,7 +3,7 @@ from enum import Enum
 from src.selectors.file.explorer import FileExplorer
 from src.selectors.target_column.selector import TargetColumnSelector
 
-from src.coordinator import MachineLearningCoordinator
+from src.coordinators.trainable_algorithms.coordinator import TrainableAlgorithmsCoordinator
 
 from src.algorithms.zero_r.spreadsheet import ZeroRSpreadsheet
 from src.algorithms.zero_r.trainer import ZeroRTrainer
@@ -27,13 +27,14 @@ class Algorithms(Enum):
 
 def main():
     algorithm = int(input('Select algorithm\n1. Zero-R\n2. One-R\nOption: '))
-    iterations = int(input('\nDefine number of iterations for testing: '))
     file_name = FileExplorer().select_file_in('data/')
 
-    director = MachineLearningCoordinator(iterations)
     reader = SpreadsheetReader()
 
     if algorithm == Algorithms.ZeroR.value:
+        iterations = int(input('\nDefine number of iterations for testing: '))
+        director = TrainableAlgorithmsCoordinator(iterations)
+
         target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
 
         spreadsheet = ZeroRSpreadsheet(file_name, reader, SpreadsheetCleaner())
@@ -46,6 +47,9 @@ def main():
         print(director.execute_algorithm())
 
     elif algorithm == Algorithms.OneR.value:
+        iterations = int(input('\nDefine number of iterations for testing: '))
+        director = TrainableAlgorithmsCoordinator(iterations)
+
         target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
 
         spreadsheet = OneRSpreadsheet(file_name, reader, SpreadsheetCleaner())
