@@ -7,7 +7,13 @@ class TargetColumnSelector:
     
 	def __init__(self, reader: SpreadsheetReader):
 		self._reader = reader
-    
+
+	def clean_column_names(self, columns: list): # TODO: This could be on Spreadsheet-Cleaner
+		cleaned_columns = list()
+		for column in columns:
+			cleaned_columns.append(column.strip())
+		return cleaned_columns
+
 	def print_column_selector(self, column_names: list):
 		for i in range(len(column_names)):
 			print(f'[{i+1}] {column_names[i]}')
@@ -17,7 +23,7 @@ class TargetColumnSelector:
 
 	def select_target_column_in(self, file_name: str, rows: int) -> str:
 		dataset = self._reader.read_file(file_name)
-		column_names = list(dataset)
+		column_names = self.clean_column_names(list(dataset))
 
 		print('Dataset preview:\n')
 		self.print_dataset_preview(dataset, rows)
