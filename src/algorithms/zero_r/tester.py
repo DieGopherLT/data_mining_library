@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.tester.tester import Tester
+from src.coordinators.trainable_algorithms.tester.interface import Tester
 
 
 class ZeroRTester(Tester):

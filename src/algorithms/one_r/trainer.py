@@ -1,5 +1,5 @@
 import pandas as pd
-from src.trainer.trainer import Trainer
+from src.coordinators.trainable_algorithms.trainer.interface import Trainer
 from src.tables.frequency import FrequencyTableGenerator
 
 
