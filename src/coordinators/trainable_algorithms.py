@@ -1,9 +1,9 @@
-from .spreadsheet import spreadsheet
-from .trainer import trainer
-from .tester import tester
+from src.spreadsheet import spreadsheet
+from src.trainer import trainer
+from src.tester import tester
 
 
-class MachineLearningCoordinator:
+class TrainableAlgorithmsCoordinator:
     """ Coordinates spreadsheet, trainer and tester classes to execute a machine learning algorithm """
 
     def __init__(self, test_iterations: int):
