@@ -5,7 +5,12 @@ class VerosimilitudeTable:
     def __init__(self, frequency_tables: list):
         self._frequency_tables = frequency_tables
         self._verosimilitude_table = None
+        self._zero_frequency_problem = bool
         self._verosimilitude_denominators = list()
+
+    def create(self):
+        self.__calculate_verosimilitude_denominators()
+        self.__generate()
 
     def __calculate_verosimilitude_denominators(self):
         denominators = list()
@@ -24,17 +29,29 @@ class VerosimilitudeTable:
         self._verosimilitude_denominators = denominators
 
     def __generate(self):
-        for i in range(len(self._frequency_tables)):
-            column_frequency_table = self._frequency_tables[i]
+        fqts_copy = self._frequency_tables.copy()
+        for i in range(len(fqts_copy)):
+            column_frequency_table = fqts_copy[i]
             column_name = list(column_frequency_table)[0]
             target_values_frequency_table = column_frequency_table[column_name].items()
 
             for [target_value, frequency_table] in target_values_frequency_table:
                 for [column_value, frequency] in frequency_table.items():
+                    if frequency == 0:
+                        self._zero_frequency_problem = True
                     verosimilitude = self.__calculate_verosimilitude(
                         frequency, self._verosimilitude_denominators[i][column_name][target_value])
+
                     column_frequency_table[column_name][target_value][column_value] = verosimilitude
+
+        self._verosimilitude_table = fqts_copy
 
     @staticmethod
     def __calculate_verosimilitude(numerator: int, denominator: int):
         return numerator / denominator
+
+    def get_frequencies(self):
+        return self._frequency_tables
+
+    def get_table(self):
+        return self._verosimilitude_table
