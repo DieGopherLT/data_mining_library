@@ -1,13 +1,11 @@
-from ..base_decorator import BaseVerosimilitudeTableDecorator
-from ..interface import VerosimilitudeTable
+from ..table import VerosimilitudeTable
 
 
-class ZeroFrequencyVerosimilitudeTable(BaseVerosimilitudeTableDecorator):
-
-    def __init__(self, vt: VerosimilitudeTable):
-        super().__init__(vt)
-
+class ZeroFrequencyVerosimilitudeTable(VerosimilitudeTable):
+    def create(self):
+        # Crear metodo de resolver frecuencia cero
+        super().__calculate_verosimilitude_denominators()
+        super().__generate()
     # TODO: methods to transform a 'VerosimilitudeTable' into a one without zero frequencies
 
-    def retrieve(self):
-        pass
+

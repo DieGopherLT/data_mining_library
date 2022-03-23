@@ -1,6 +1,8 @@
 import pandas as pd
 from src.coordinators.trainable_algorithms.trainer.interface import Trainer
 from src.tables.frequency import FrequencyTableGenerator
+from src.tables.verosimilitude.base import BaseVerosimilitudeTable
+from src.tables.verosimilitude.concrete_decorators.zero_frequency import ZeroFrequencyVerosimilitudeTable
 
 
 class NaiveBayesTrainer(Trainer):
@@ -25,6 +27,10 @@ class NaiveBayesTrainer(Trainer):
         self.__numeric_attributes = spreadsheet.selectd_types(include=['number'])
 
         self.__frequency_tables = self.__frequency_table_generator.generate_with_target_column(spreadsheet)
+
+        verosimilitude_tables = BaseVerosimilitudeTable(self.__frequency_tables).create()
+        if verosimilitude_tables.has_zero_frequency():
+            verosimilitude_tables = ZeroFrequencyVerosimilitudeTable(verosimilitude_tables.get_frequencies()).create()
 
     def retrieve_model_description(self):
         pass
