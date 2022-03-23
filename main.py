@@ -16,7 +16,7 @@ from src.algorithms.one_r.tester import OneRTester
 from src.spreadsheet.cleaner import SpreadsheetCleaner
 from src.spreadsheet.reader import SpreadsheetReader
 
-from src.tables.frequency import FrequencyTableGenerator
+from src.tables.frequency import FrequencyTableWithZeros
 
 
 class Algorithms(Enum):
@@ -53,7 +53,7 @@ def main():
         target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
 
         spreadsheet = OneRSpreadsheet(file_name, reader, SpreadsheetCleaner())
-        trainer = OneRTrainer(target_column, FrequencyTableGenerator(target_column))
+        trainer = OneRTrainer(target_column, FrequencyTableWithZeros(target_column))
 
         director.set_spreadsheet(spreadsheet)
         director.set_trainer(trainer)
