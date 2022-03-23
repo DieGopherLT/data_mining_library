@@ -22,3 +22,19 @@ class VerosimilitudeTable:
             denominators.append(attribute_collection)
 
         self._verosimilitude_denominators = denominators
+
+    def __generate(self):
+        for i in range(len(self._frequency_tables)):
+            column_frequency_table = self._frequency_tables[i]
+            column_name = list(column_frequency_table)[0]
+            target_values_frequency_table = column_frequency_table[column_name].items()
+
+            for [target_value, frequency_table] in target_values_frequency_table:
+                for [column_value, frequency] in frequency_table.items():
+                    verosimilitude = self.__calculate_verosimilitude(
+                        frequency, self._verosimilitude_denominators[i][column_name][target_value])
+                    column_frequency_table[column_name][target_value][column_value] = verosimilitude
+
+    @staticmethod
+    def __calculate_verosimilitude(numerator: int, denominator: int):
+        return numerator / denominator
