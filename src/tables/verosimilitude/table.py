@@ -1,3 +1,4 @@
+from copy import deepcopy
 from functools import reduce
 
 
@@ -9,10 +10,11 @@ class VerosimilitudeTable:
         self._verosimilitude_denominators = list()
 
     def create(self):
-        self.__calculate_verosimilitude_denominators()
-        self.__generate()
+        self._calculate_verosimilitude_denominators()
+        self._generate()
+        return self
 
-    def __calculate_verosimilitude_denominators(self):
+    def _calculate_verosimilitude_denominators(self):
         denominators = list()
         fqts_copy = self._frequency_tables.copy()
         for clmn_fqcy in fqts_copy:
@@ -28,8 +30,9 @@ class VerosimilitudeTable:
 
         self._verosimilitude_denominators = denominators
 
-    def __generate(self):
-        fqts_copy = self._frequency_tables.copy()
+    def _generate(self):
+        fqts_copy = deepcopy(self._frequency_tables)
+
         for i in range(len(fqts_copy)):
             column_frequency_table = fqts_copy[i]
             column_name = list(column_frequency_table)[0]
@@ -48,7 +51,7 @@ class VerosimilitudeTable:
 
     @staticmethod
     def __calculate_verosimilitude(numerator: int, denominator: int):
-        return numerator / denominator
+        return float(numerator) / float(denominator)
 
     def get_frequencies(self):
         return self._frequency_tables
