@@ -3,9 +3,20 @@ from ..table import VerosimilitudeTable
 
 class ZeroFrequencyVerosimilitudeTable(VerosimilitudeTable):
     def create(self):
-        # Crear metodo de resolver frecuencia cero
-        super().__calculate_verosimilitude_denominators()
-        super().__generate()
-    # TODO: methods to transform a 'VerosimilitudeTable' into a one without zero frequencies
+        self.__solve_zero_frequency()
+        self._calculate_verosimilitude_denominators()
+        self._generate()
+        return self
 
+    def __solve_zero_frequency(self):
+        fqts_copy = self._frequency_tables.copy()
+        for i in range(len(fqts_copy)):
+            column_frequency_table = fqts_copy[i]
+            column_name = list(column_frequency_table)[0]
+            target_values_frequency_table = column_frequency_table[column_name].items()
 
+            for [target_value, frequency_table] in target_values_frequency_table:
+                for [column_value, frequency] in frequency_table.items():
+                    column_frequency_table[column_name][target_value][column_value] = frequency + 1
+
+        self._frequency_tables = fqts_copy

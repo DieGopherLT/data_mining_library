@@ -23,10 +23,10 @@ class NaiveBayesTrainer(Trainer):
     # 3. Calculate avgs and stdevps
     # 4. Calculate posterior probabilities (tester)
     def train(self, spreadsheet: pd.DataFrame):
-        self.__categoric_attributes = spreadsheet.selectd_types(include=['object'])
-        self.__numeric_attributes = spreadsheet.selectd_types(include=['number'])
+        self.__categoric_attributes = spreadsheet.select_dtypes(include=['object'])
+        self.__numeric_attributes = spreadsheet.select_dtypes(include=['number'])
 
-        self.__frequency_tables = self.__frequency_table_generator.generate_with_target_column(spreadsheet)
+        self.__frequency_tables = self.__frequency_table_generator.generate(self.__categoric_attributes)
 
         verosimilitude_tables = BaseVerosimilitudeTable(self.__frequency_tables).create()
         if verosimilitude_tables.has_zero_frequency():
