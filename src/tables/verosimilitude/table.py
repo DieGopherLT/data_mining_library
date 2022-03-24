@@ -5,7 +5,7 @@ from functools import reduce
 class VerosimilitudeTable:
     def __init__(self, frequency_tables: list):
         self._frequency_tables = frequency_tables
-        self._verosimilitude_table = None
+        self._verosimilitude_tables = list()
         self._zero_frequency_problem = bool
         self._verosimilitude_denominators = list()
 
@@ -47,7 +47,7 @@ class VerosimilitudeTable:
 
                     column_frequency_table[column_name][target_value][column_value] = verosimilitude
 
-        self._verosimilitude_table = fqts_copy
+        self._verosimilitude_tables = fqts_copy
 
     @staticmethod
     def __calculate_verosimilitude(numerator: int, denominator: int):
@@ -57,4 +57,10 @@ class VerosimilitudeTable:
         return self._frequency_tables
 
     def get_table(self):
-        return self._verosimilitude_table
+        return self._verosimilitude_tables
+
+    def get_table_for(self, column: str):
+        for table in self._verosimilitude_tables:
+            if table.get(column) is not None:
+                return list(table.values())[0]
+        return None
