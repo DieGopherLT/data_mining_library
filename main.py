@@ -30,14 +30,15 @@ def main():
     file_name = FileExplorer().select_file_in('data/')
 
     reader = SpreadsheetReader()
+    cleaner = SpreadsheetCleaner()
 
     if algorithm == Algorithms.ZeroR.value:
         iterations = int(input('\nDefine number of iterations for testing: '))
         director = TrainableAlgorithmsCoordinator(iterations)
 
-        target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
+        target_column = TargetColumnSelector(reader, cleaner).select_target_column_in(file_name, 3)
 
-        spreadsheet = ZeroRSpreadsheet(file_name, reader, SpreadsheetCleaner())
+        spreadsheet = ZeroRSpreadsheet(file_name, reader, cleaner)
         spreadsheet.set_target_column(target_column)
 
         director.set_spreadsheet(spreadsheet)
@@ -52,7 +53,7 @@ def main():
 
         target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
 
-        spreadsheet = OneRSpreadsheet(file_name, reader, SpreadsheetCleaner())
+        spreadsheet = OneRSpreadsheet(file_name, reader, cleaner)
         trainer = OneRTrainer(target_column, FrequencyTableWithZeros(target_column))
 
         director.set_spreadsheet(spreadsheet)
