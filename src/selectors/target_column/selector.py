@@ -1,18 +1,14 @@
 import pandas as pd
 
 from ...spreadsheet.reader import SpreadsheetReader
+from ...spreadsheet.cleaner import SpreadsheetCleaner
 
 
 class TargetColumnSelector:
     
-	def __init__(self, reader: SpreadsheetReader):
+	def __init__(self, reader: SpreadsheetReader, cleaner: SpreadsheetCleaner):
 		self._reader = reader
-
-	def clean_column_names(self, columns: list): # TODO: This could be on Spreadsheet-Cleaner
-		cleaned_columns = list()
-		for column in columns:
-			cleaned_columns.append(column.strip())
-		return cleaned_columns
+		self._cleaner = cleaner
 
 	def print_column_selector(self, column_names: list):
 		for i in range(len(column_names)):
@@ -23,7 +19,9 @@ class TargetColumnSelector:
 
 	def select_target_column_in(self, file_name: str, rows: int) -> str:
 		dataset = self._reader.read_file(file_name)
-		column_names = self.clean_column_names(list(dataset))
+		dataset = self._cleaner.clean_column_names_whitespaces(dataset)
+
+		column_names = dataset.columns
 
 		print('Dataset preview:\n')
 		self.print_dataset_preview(dataset, rows)
