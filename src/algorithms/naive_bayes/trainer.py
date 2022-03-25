@@ -65,4 +65,16 @@ class NaiveBayesTrainer(Trainer):
         self.__model_description[self.__target_column] = similitude
 
     def retrieve_model_description(self):
+        """
+            Formally, Naive Bayes algorithm does not produce a model description, instead returns
+            a group of processed data that functions as the result of calculating values that are
+            conformed by:
+
+            categoric attributes, which has:
+                - Verosimilitude tables with regard to the target column values.
+
+            numeric attributes:
+                - Which are processed by calculating the average and standard deviations
+                  with regard to the target column values.
+        """
         return self.__model_description
