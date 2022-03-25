@@ -9,7 +9,7 @@ class SpreadsheetCleaner:
 
 		return dataframe
 
-	def clean_column_names_whitespaces(df: pd.DataFrame):
+	def clean_column_names_whitespaces(self, df: pd.DataFrame):
 		""" Cleans whitespaces in column names """
 		df.copy()
 		columns = df.columns
