@@ -1,10 +1,10 @@
-from ..table import VerosimilitudeTable
+from ..table import VerisimilitudeTable
 
 
-class ZeroFrequencyVerosimilitudeTable(VerosimilitudeTable):
+class ZeroFrequencyVerisimilitudeTable(VerisimilitudeTable):
     def create(self):
         self.__solve_zero_frequency()
-        self._calculate_verosimilitude_denominators()
+        self._calculate_verisimilitude_denominators()
         self._generate()
         return self
 
