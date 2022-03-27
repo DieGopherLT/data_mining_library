@@ -34,6 +34,7 @@ class NaiveBayesTester(Tester):
         target_column = self.__target_column
         target_column_values = test_set[target_column].unique()
 
+
         i = 0  # Number of instance
         for instance in instances:
             i += 1
@@ -75,10 +76,25 @@ class NaiveBayesTester(Tester):
         target_column_values_count = len(target_column_values)
         rows_to_normalize = int(len(probabilities) / target_column_values_count)
 
-        instance_group = list()
+        instance_group = list() # Is just here for the demo
         for row in range(1, rows_to_normalize + 1):
             instance_group = [f'Pr [ {row} | {column_value} ]' for column_value in target_column_values]
-            pprint(instance_group)
 
+        # This is also here just for testing, should be idented one more level inside for line 80
         grouped_instances = probabilities.loc[instance_group]
-        print(grouped_instances)
+        grouped_instances_dict = grouped_instances[["probability"]].to_dict()
+
+        for instance_probability in grouped_instances_dict.values():
+            normalized = dict()
+            for ins_pr in instance_probability.items():
+                [pr_value_given, probability] = ins_pr
+                # print(pr_value_given, probability)
+                other_probabilities = dict(filter(lambda e: e != ins_pr, instance_probability.items()))
+                pprint(other_probabilities)
+                values_sum = reduce(lambda x, y: x + y, other_probabilities.values())
+                print(values_sum)
+                normalized[pr_value_given] = probability / values_sum
+
+            pprint(normalized)
+
+
