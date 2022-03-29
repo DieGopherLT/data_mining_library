@@ -16,13 +16,14 @@ class NaiveBayesTester(Tester):
     def test(self, model_description: dict, test_set: pd.DataFrame):
         self.__model_description = model_description
         probabilities = self.__calculate_probabilities(test_set)
-        # print(probabilities)
-        self.__normalize(probabilities, test_set)
+        normalized = self.__normalize(probabilities, test_set)
+        self.__evaluate(normalized)
 
     def retrieve_test_output(self):
         pass
 
     def __calculate_probabilities(self, test_set: pd.DataFrame):
+        """ Uses a given test_set to calculate and return probabilities """
         columns = list(test_set.columns)
         enum_column = list(enumerate(test_set.columns))
         enum_column = {column: index for [index, column] in enum_column}
@@ -71,30 +72,37 @@ class NaiveBayesTester(Tester):
 
         return output_df
 
+    # this function does both things because doing them separately involves code duplication
     def __normalize(self, probabilities: pd.DataFrame, test_set: pd.DataFrame):
-        target_column_values = test_set[self.__target_column].unique()
-        target_column_values_count = len(target_column_values)
+        """ Manipulates probabilities and returns a dataframe with calculated normalized values """
+        probabilities = probabilities.copy()
+        probabilities["normalization"] = None
+        print(probabilities)
+
+        unique_target_values = test_set[self.__target_column].unique()
+        target_column_values_count = len(unique_target_values)
         rows_to_normalize = int(len(probabilities) / target_column_values_count)
 
-        instance_group = list() # Is just here for the demo
         for row in range(1, rows_to_normalize + 1):
-            instance_group = [f'Pr [ {row} | {column_value} ]' for column_value in target_column_values]
+            instance_group = [f'Pr [ {row} | {column_value} ]' for column_value in unique_target_values]
 
-        # This is also here just for testing, should be idented one more level inside for line 80
-        grouped_instances = probabilities.loc[instance_group]
-        grouped_instances_dict = grouped_instances[["probability"]].to_dict()
+            grouped_instances = probabilities.loc[instance_group]
+            grouped_instances_probabilities = grouped_instances[["probability"]].to_dict()
 
-        for instance_probability in grouped_instances_dict.values():
-            normalized = dict()
-            for ins_pr in instance_probability.items():
-                [pr_value_given, probability] = ins_pr
-                # print(pr_value_given, probability)
-                other_probabilities = dict(filter(lambda e: e != ins_pr, instance_probability.items()))
-                pprint(other_probabilities)
-                values_sum = reduce(lambda x, y: x + y, other_probabilities.values())
-                print(values_sum)
-                normalized[pr_value_given] = probability / values_sum
+            for instance_combinations in grouped_instances_probabilities.values():
+                probabilities_sum = reduce(lambda x, y: x + y, instance_combinations.values())
 
-            pprint(normalized)
+                for instance_probability in instance_combinations.items():
+                    [index_to_normalize, probability] = instance_probability
+                    probabilities.loc[index_to_normalize, "normalization"] = probability / probabilities_sum
+
+        print()
+        print(probabilities)
+
+        return probabilities
+
+    def __evaluate(self, normalized: pd.DataFrame):
+        """ comment """
+        pass
 
 
