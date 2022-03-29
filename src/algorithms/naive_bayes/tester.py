@@ -35,7 +35,6 @@ class NaiveBayesTester(Tester):
         target_column = self.__target_column
         target_column_values = test_set[target_column].unique()
 
-
         i = 0  # Number of instance
         for instance in instances:
             i += 1
@@ -72,14 +71,20 @@ class NaiveBayesTester(Tester):
 
         return output_df
 
+    def __get_prediction_target_value_in(self, dataset, row):
+        return dataset[self.__target_column][row]
+
     # this function does both things because doing them separately involves code duplication
     def __normalize(self, probabilities: pd.DataFrame, test_set: pd.DataFrame):
         """ Manipulates probabilities and returns a dataframe with calculated normalized values """
+        #print(test_set)
         probabilities = probabilities.copy()
         probabilities["normalization"] = None
-        print(probabilities)
+        probabilities["prediction"] = None
+        #print(probabilities)
 
         unique_target_values = test_set[self.__target_column].unique()
+        pprint(unique_target_values)
         target_column_values_count = len(unique_target_values)
         rows_to_normalize = int(len(probabilities) / target_column_values_count)
 
@@ -96,7 +101,18 @@ class NaiveBayesTester(Tester):
                     [index_to_normalize, probability] = instance_probability
                     probabilities.loc[index_to_normalize, "normalization"] = probability / probabilities_sum
 
-        print()
+            grouped_instances = probabilities.loc[instance_group]
+            grouped_instances_normalized = grouped_instances[["normalization"]].to_dict()
+            grouped_instances_normalized = grouped_instances_normalized["normalization"]
+
+            # pprint(grouped_instances_normalized)
+            prediction = max(grouped_instances_normalized, key=grouped_instances_normalized.get)
+            # TODO: prediction should be used to get the prediction for the row
+            print(prediction)
+
+            probabilities.loc[instance_group, "prediction"] = self.__get_prediction_target_value_in(test_set, row-1)
+
+        # print()
         print(probabilities)
 
         return probabilities
