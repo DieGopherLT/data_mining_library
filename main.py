@@ -1,4 +1,5 @@
 from enum import Enum
+import pandas as pd
 
 from src.selectors.file.explorer import FileExplorer
 from src.selectors.target_column.selector import TargetColumnSelector
@@ -12,6 +13,11 @@ from src.algorithms.zero_r.tester import ZeroRTester
 from src.algorithms.one_r.spreadsheet import OneRSpreadsheet
 from src.algorithms.one_r.trainer import OneRTrainer
 from src.algorithms.one_r.tester import OneRTester
+
+
+from src.algorithms.naive_bayes.spreadsheet import NaiveBayesSpreadsheet
+from src.algorithms.naive_bayes.trainer import NaiveBayesTrainer
+from src.algorithms.naive_bayes.tester import NaiveBayesTester
 
 from src.spreadsheet.cleaner import SpreadsheetCleaner
 from src.spreadsheet.reader import SpreadsheetReader
@@ -66,4 +72,14 @@ def main():
         print('\nAlgun dia...')
 
 
-main()
+#main()
+excel = pd.read_csv('./data/iris_mixed.csv')
+target_column = 'iris'
+
+trainer = NaiveBayesTrainer(target_column, FrequencyTableWithZeros(target_column))
+trainer.train(excel)
+
+model_description = trainer.retrieve_model_description()
+
+tester = NaiveBayesTester(target_column)
+tester.test(model_description, excel)

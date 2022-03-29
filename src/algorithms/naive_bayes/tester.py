@@ -71,8 +71,10 @@ class NaiveBayesTester(Tester):
 
         return output_df
 
-    def __get_prediction_target_value_in(self, dataset, row):
-        return dataset[self.__target_column][row]
+    def __get_prediction_target_value_in(self, prediction, target_values):
+        for target_value in target_values:
+            if prediction.find(target_value) != -1:
+                return target_value
 
     # this function does both things because doing them separately involves code duplication
     def __normalize(self, probabilities: pd.DataFrame, test_set: pd.DataFrame):
@@ -84,7 +86,7 @@ class NaiveBayesTester(Tester):
         #print(probabilities)
 
         unique_target_values = test_set[self.__target_column].unique()
-        pprint(unique_target_values)
+        #pprint(unique_target_values)
         target_column_values_count = len(unique_target_values)
         rows_to_normalize = int(len(probabilities) / target_column_values_count)
 
@@ -107,10 +109,8 @@ class NaiveBayesTester(Tester):
 
             # pprint(grouped_instances_normalized)
             prediction = max(grouped_instances_normalized, key=grouped_instances_normalized.get)
-            # TODO: prediction should be used to get the prediction for the row
-            print(prediction)
 
-            probabilities.loc[instance_group, "prediction"] = self.__get_prediction_target_value_in(test_set, row-1)
+            probabilities.loc[instance_group, "prediction"] = self.__get_prediction_target_value_in(prediction, unique_target_values)
 
         # print()
         print(probabilities)
