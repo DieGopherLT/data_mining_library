@@ -26,6 +26,8 @@ class SpreadsheetCleaner:
 		df = dataframe.copy()
 
 		for column in columns:
+			if df[column].dtypes == 'float64':
+				continue
 			df[column] = df[column].astype(str).apply(lambda attr: attr.strip())
 		
 		return df
