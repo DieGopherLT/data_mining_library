@@ -12,12 +12,13 @@ class NaiveBayesTester(Tester):
         self.__target_column = target_column
         self.__model_description = {}
         self._result = pd.DataFrame
+        self.__count_target_values = 0
 
     def test(self, model_description: dict, test_set: pd.DataFrame):
         self.__model_description = model_description
         probabilities = self.__calculate_probabilities(test_set)
         normalized = self.__normalize(probabilities, test_set)
-        self.__evaluate(normalized)
+        self.__evaluate(normalized, test_set)
 
     def retrieve_test_output(self):
         pass
@@ -87,8 +88,8 @@ class NaiveBayesTester(Tester):
 
         unique_target_values = test_set[self.__target_column].unique()
         #pprint(unique_target_values)
-        target_column_values_count = len(unique_target_values)
-        rows_to_normalize = int(len(probabilities) / target_column_values_count)
+        self.__count_target_values = len(unique_target_values)
+        rows_to_normalize = int(len(probabilities) / self.__count_target_values)
 
         for row in range(1, rows_to_normalize + 1):
             instance_group = [f'Pr [ {row} | {column_value} ]' for column_value in unique_target_values]
@@ -113,12 +114,51 @@ class NaiveBayesTester(Tester):
             probabilities.loc[instance_group, "prediction"] = self.__get_prediction_target_value_in(prediction, unique_target_values)
 
         # print()
-        print(probabilities)
+        #print(probabilities)
 
         return probabilities
 
-    def __evaluate(self, normalized: pd.DataFrame):
+    def __evaluate(self, normalized: pd.DataFrame, test_set: pd.DataFrame):
         """ comment """
-        pass
+        # Approach
+        """
+        # For result 
+        
+        # For test_set
+        result = [0.56, 0.72, 0.91]
+        list(map(lambda x: f'assert percentage {x}, failure percentage {1 - x}', result))
+        result = ['assert percentage: 0.56, failure percentage 1 - 0.56', 0.72, 0.91]
+        
+        # For normalized
+        report = f'assert percentage: (reduce(lambda x, y: x + y)/ len(result)), failure percentage: (1 - assert_percentage)'
+        """
 
+        """ Pseudocode
+            results = list()
+            for each instance in zip(test_set, normalized):
+                
+                #get_value_within(normalized)
+                    #getattr()
+                
+                compare target_column value from test_set with normalized prediction column value
+                if both values are equal
+                    asserts ++
+            accuracy_percentage = asserts / len(test_set) 
+            results.append(accuracy_percentage)
+            return results
+        """
+
+        results = list()
+        normalized_prediction = normalized["prediction"].copy()
+        test_set_target_column = test_set[self.__target_column].copy()
+
+        i = 0
+        asserts = 0
+        for instance in test_set_target_column:
+            compared_instance = normalized_prediction[i]
+            if instance is compared_instance:
+                asserts += 1
+
+            i += self.__count_target_values
+        results.append(asserts)
 
