@@ -10,18 +10,18 @@ from src.coordinators.trainable_algorithms.tester.interface import Tester
 class NaiveBayesTester(Tester):
     def __init__(self, target_column: str):
         self.__target_column = target_column
-        self.__model_description = {}
-        self._result = pd.DataFrame
+        self.__model_description = dict()
+        self._results = list()
         self.__count_target_values = 0
 
     def test(self, model_description: dict, test_set: pd.DataFrame):
         self.__model_description = model_description
         probabilities = self.__calculate_probabilities(test_set)
-        normalized = self.__normalize(probabilities, test_set)
+        normalized = self. __normalize_and_predict(probabilities, test_set)
         self.__evaluate(normalized, test_set)
 
     def retrieve_test_output(self):
-        pass
+        return f'accuracy: {(reduce(lambda x, y: x + y, self._results)/ len(self._results))}'
 
     def __calculate_probabilities(self, test_set: pd.DataFrame):
         """ Uses a given test_set to calculate and return probabilities """
@@ -72,22 +72,20 @@ class NaiveBayesTester(Tester):
 
         return output_df
 
-    def __get_prediction_target_value_in(self, prediction, target_values):
+    @staticmethod
+    def __get_prediction_target_value_in(prediction, target_values):
         for target_value in target_values:
             if prediction.find(target_value) != -1:
                 return target_value
 
     # this function does both things because doing them separately involves code duplication
-    def __normalize(self, probabilities: pd.DataFrame, test_set: pd.DataFrame):
+    def __normalize_and_predict(self, probabilities: pd.DataFrame, test_set: pd.DataFrame):
         """ Manipulates probabilities and returns a dataframe with calculated normalized values """
-        #print(test_set)
         probabilities = probabilities.copy()
         probabilities["normalization"] = None
         probabilities["prediction"] = None
-        #print(probabilities)
 
         unique_target_values = test_set[self.__target_column].unique()
-        #pprint(unique_target_values)
         self.__count_target_values = len(unique_target_values)
         rows_to_normalize = int(len(probabilities) / self.__count_target_values)
 
@@ -108,47 +106,13 @@ class NaiveBayesTester(Tester):
             grouped_instances_normalized = grouped_instances[["normalization"]].to_dict()
             grouped_instances_normalized = grouped_instances_normalized["normalization"]
 
-            # pprint(grouped_instances_normalized)
             prediction = max(grouped_instances_normalized, key=grouped_instances_normalized.get)
 
             probabilities.loc[instance_group, "prediction"] = self.__get_prediction_target_value_in(prediction, unique_target_values)
 
-        # print()
-        #print(probabilities)
-
         return probabilities
 
     def __evaluate(self, normalized: pd.DataFrame, test_set: pd.DataFrame):
-        """ comment """
-        # Approach
-        """
-        # For result 
-        
-        # For test_set
-        result = [0.56, 0.72, 0.91]
-        list(map(lambda x: f'assert percentage {x}, failure percentage {1 - x}', result))
-        result = ['assert percentage: 0.56, failure percentage 1 - 0.56', 0.72, 0.91]
-        
-        # For normalized
-        report = f'assert percentage: (reduce(lambda x, y: x + y)/ len(result)), failure percentage: (1 - assert_percentage)'
-        """
-
-        """ Pseudocode
-            results = list()
-            for each instance in zip(test_set, normalized):
-                
-                #get_value_within(normalized)
-                    #getattr()
-                
-                compare target_column value from test_set with normalized prediction column value
-                if both values are equal
-                    asserts ++
-            accuracy_percentage = asserts / len(test_set) 
-            results.append(accuracy_percentage)
-            return results
-        """
-
-        results = list()
         normalized_prediction = normalized["prediction"].copy()
         test_set_target_column = test_set[self.__target_column].copy()
 
@@ -158,7 +122,6 @@ class NaiveBayesTester(Tester):
             compared_instance = normalized_prediction[i]
             if instance is compared_instance:
                 asserts += 1
-
             i += self.__count_target_values
-        results.append(asserts)
 
+        self._results.append(asserts / len(test_set_target_column))

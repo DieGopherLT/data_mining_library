@@ -5,6 +5,7 @@ from src.selectors.file.explorer import FileExplorer
 from src.selectors.target_column.selector import TargetColumnSelector
 
 from src.coordinators.trainable_algorithms.coordinator import TrainableAlgorithmsCoordinator
+from src.coordinators.trainable_algorithms.naive_bayes_coordinator import NaiveBayesCoordinator
 
 from src.algorithms.zero_r.spreadsheet import ZeroRSpreadsheet
 from src.algorithms.zero_r.trainer import ZeroRTrainer
@@ -13,7 +14,6 @@ from src.algorithms.zero_r.tester import ZeroRTester
 from src.algorithms.one_r.spreadsheet import OneRSpreadsheet
 from src.algorithms.one_r.trainer import OneRTrainer
 from src.algorithms.one_r.tester import OneRTester
-
 
 from src.algorithms.naive_bayes.spreadsheet import NaiveBayesSpreadsheet
 from src.algorithms.naive_bayes.trainer import NaiveBayesTrainer
@@ -32,7 +32,7 @@ class Algorithms(Enum):
 
 
 def main():
-    algorithm = int(input('Select algorithm\n1. Zero-R\n2. One-R\nOption: '))
+    algorithm = int(input('Select algorithm\n1. Zero-R\n2. One-R\n3. Naive Bayes\nOption: '))
     file_name = FileExplorer().select_file_in('data/')
 
     reader = SpreadsheetReader()
@@ -57,7 +57,7 @@ def main():
         iterations = int(input('\nDefine number of iterations for testing: '))
         director = TrainableAlgorithmsCoordinator(iterations)
 
-        target_column = TargetColumnSelector(reader).select_target_column_in(file_name, 3)
+        target_column = TargetColumnSelector(reader, cleaner).select_target_column_in(file_name, 3)
 
         spreadsheet = OneRSpreadsheet(file_name, reader, cleaner)
         trainer = OneRTrainer(target_column, FrequencyTableWithZeros(target_column))
@@ -69,17 +69,34 @@ def main():
         print(director.execute_algorithm())
 
     elif algorithm == Algorithms.NaiveBayes.value:
-        print('\nAlgun dia...')
+        iterations = int(input('\nDefine number of iterations for testing: '))
+        director = NaiveBayesCoordinator(iterations)
 
+        target_column = TargetColumnSelector(reader, cleaner).select_target_column_in(file_name, 3)
 
-#main()
-excel = pd.read_csv('./data/iris_mixed.csv')
-target_column = 'iris'
+        spreadsheet = NaiveBayesSpreadsheet(file_name, reader, cleaner)
+        trainer = NaiveBayesTrainer(target_column, FrequencyTableWithZeros(target_column))
+        tester = NaiveBayesTester(target_column)
 
-trainer = NaiveBayesTrainer(target_column, FrequencyTableWithZeros(target_column))
-trainer.train(excel)
+        director.set_spreadsheet(spreadsheet)
+        director.set_trainer(trainer)
+        director.set_tester(tester)
 
-model_description = trainer.retrieve_model_description()
+        print(director.execute_algorithm())
 
-tester = NaiveBayesTester(target_column)
-tester.test(model_description, excel)
+def execute_naive_bayes():
+    # Work in progress
+    # ToDo: this should be implemented on main using NaiveBayes director
+    excel = pd.read_csv('./data/iris_mixed.csv')
+    target_column = 'iris'
+
+    trainer = NaiveBayesTrainer(target_column, FrequencyTableWithZeros(target_column))
+    trainer.train(excel)
+
+    model_description = trainer.retrieve_model_description()
+
+    tester = NaiveBayesTester(target_column)
+    tester.test(model_description, excel)
+
+main()
+#execute_naive_bayes()

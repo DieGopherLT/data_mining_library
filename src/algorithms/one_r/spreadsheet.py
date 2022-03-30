@@ -13,8 +13,7 @@ class OneRSpreadsheet(Spreadsheet):
 		
 		self._dataset: pd.DataFrame = None
 		self._randomized_dataset: pd.DataFrame = None
-
-		self.__reader = reader
+		self._reader = reader
 		self.__cleaner = cleaner
 	
 	def is_dataset_set(self):

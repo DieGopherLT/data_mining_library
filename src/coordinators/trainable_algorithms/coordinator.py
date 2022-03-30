@@ -22,7 +22,7 @@ class TrainableAlgorithmsCoordinator:
     def set_tester(self, tst: Tester) -> None:
         self._tester = tst
 
-    def __is_algorithm_set(self):
+    def _is_algorithm_set(self):
         if type(self._spreadsheet) is None:
             return False
         if type(self._trainer) is None:
