@@ -14,7 +14,7 @@ class OneRSpreadsheet(Spreadsheet):
 		self._dataset: pd.DataFrame = None
 		self._randomized_dataset: pd.DataFrame = None
 		self._reader = reader
-		self.__cleaner = cleaner
+		self._cleaner = cleaner
 	
 	def is_dataset_set(self):
 		""" Checks if dataset attribute is set """
@@ -29,7 +29,7 @@ class OneRSpreadsheet(Spreadsheet):
 		""" Does a cleansing process in the whole dataframe """
 
 		print('Dataframe is being cleansed')
-		self._dataset = self.__cleaner.clean(self._dataset)
+		self._dataset = self._cleaner.clean(self._dataset)
 
 	def randomize_dataset(self):
 		""" Uses dataset to generate a randomized one """

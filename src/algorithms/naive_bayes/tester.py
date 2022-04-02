@@ -1,5 +1,3 @@
-from pprint import pprint
-
 import pandas as pd
 from scipy.stats import norm
 from functools import reduce
@@ -31,7 +29,7 @@ class NaiveBayesTester(Tester):
 
         output_df = pd.DataFrame(columns=columns)
 
-        instances = test_set.itertuples(index=False)
+        instances = test_set.itertuples(index=False, name=None)
 
         target_column = self.__target_column
         target_column_values = test_set[target_column].unique()
@@ -48,17 +46,25 @@ class NaiveBayesTester(Tester):
                     column_keys = self.__model_description[column].keys()
 
                     if column == target_column:
-                        factors[column] = self.__model_description[column][target_column_value]
+                        try:
+                            factors[column] = self.__model_description[column][target_column_value]
+                        except KeyError:
+                            factors[column] = 1  # Missing values are not considered for the calculation
 
                     elif ("avg" or "std") in column_keys:
-                        mean = self.__model_description[column]["avg"][target_column_value]
-                        std = self.__model_description[column]["std"][target_column_value]
-                        pdf = norm.pdf(getattr(instance, f'_{attr}'), mean, std)
-                        factors[column] = pdf
+                        try:
+                            mean = self.__model_description[column]["avg"][target_column_value]
+                            std = self.__model_description[column]["std"][target_column_value]
+                            pdf = norm.pdf(instance[attr], mean, std)
+                            factors[column] = pdf
+                        except KeyError:
+                            factors[column] = 1  # Missing values are not considered for the calculation
 
                     else:
-                        factors[column] = self.__model_description[column][target_column_value][
-                            getattr(instance, f'_{attr}')]
+                        try:
+                            factors[column] = self.__model_description[column][target_column_value][instance[attr]]
+                        except KeyError:
+                            factors[column] = 1  # Missing values are not considered for the calculation
 
                 probability = reduce(lambda x, y: x * y, factors.values())
 

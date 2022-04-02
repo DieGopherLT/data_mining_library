@@ -6,7 +6,7 @@ class VerisimilitudeTable:
     def __init__(self, frequency_tables: list):
         self._frequency_tables = frequency_tables
         self._verisimilitude_tables = list()
-        self._zero_frequency_problem = bool
+        self._zero_frequency_problem = False
         self._verisimilitude_denominators = list()
 
     def create(self):
