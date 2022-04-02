@@ -14,6 +14,7 @@ class NaiveBayesSpreadsheet(OneRSpreadsheet):
 
     def read(self):
         self._dataset = self._reader.read_file(self._file_name)
+        self.clean_data()
 
     def randomize_dataset(self):
         """ Uses dataset to generate a randomized one """
