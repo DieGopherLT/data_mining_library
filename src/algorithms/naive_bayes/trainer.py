@@ -42,7 +42,8 @@ class NaiveBayesTrainer(Trainer):
         numeric_attributes[self.__target_column] = spreadsheet[self.__target_column]
 
         for column in numeric_attributes.columns:
-            if column == self.__target_column:
+            if column == self.__target_column:  # Nonsense 'cause Naive Bayes can not have a target column with
+                # numeric values
                 continue
             association = numeric_attributes[[column, self.__target_column]]
             avg = association.groupby(self.__target_column).mean().to_dict()

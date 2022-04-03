@@ -84,6 +84,7 @@ def main():
 
         print(director.execute_algorithm())
 
+
 def execute_naive_bayes():
     # Work in progress
     # ToDo: this should be implemented on main using NaiveBayes director
@@ -97,6 +98,7 @@ def execute_naive_bayes():
 
     tester = NaiveBayesTester(target_column)
     tester.test(model_description, excel)
+
 
 main()
 #execute_naive_bayes()

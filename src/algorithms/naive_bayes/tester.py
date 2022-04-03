@@ -55,8 +55,17 @@ class NaiveBayesTester(Tester):
                         try:
                             mean = self.__model_description[column]["avg"][target_column_value]
                             std = self.__model_description[column]["std"][target_column_value]
-                            pdf = norm.pdf(instance[attr], mean, std)
-                            factors[column] = pdf
+                            """
+                            Standard deviation equals zero because in the training set there's only one element
+                            for the numerical column matching X value in the target column, hence the standard
+                            deviation for a unique element can not be calculated/is undefined, so equals zero, 
+                            therefore there would be a problem calculating the PDF. 
+                            """
+                            if std > 0:
+                                pdf = norm.pdf(instance[attr], loc=mean, scale=std)
+                                factors[column] = pdf
+                            else:
+                                factors[column] = 1
                         except KeyError:
                             factors[column] = 1  # Missing values are not considered for the calculation
 
