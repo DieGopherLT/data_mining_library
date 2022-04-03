@@ -1,4 +1,5 @@
 import pandas as pd
+from ..exception import OutOfRange
 
 from ...spreadsheet.reader import SpreadsheetReader
 from ...spreadsheet.cleaner import SpreadsheetCleaner
@@ -23,13 +24,22 @@ class TargetColumnSelector:
 
 		column_names = dataset.columns
 
-		print('Dataset preview:\n')
-		self.print_dataset_preview(dataset, rows)
+		ok = False 
+		while(ok == False):
+			print('Dataset preview:\n')
+			self.print_dataset_preview(dataset, rows)
 
-		print('\nColumns:\n')
-		self.print_column_selector(column_names)
+			print('\nColumns:\n')
+			self.print_column_selector(column_names)
 
-		target_column_index = int(input('\nSelect target column: '))
+			target_column_index = int(input('\nSelect target column: '))
+
+			try:
+				OutOfRange(target_column_index, len(column_names))
+			except IndexError:
+				print(f'{target_column_index} is not a proper index of the columns.')
+				continue
+			ok = True
+
 		target_column = column_names[target_column_index-1]
-
 		return target_column
