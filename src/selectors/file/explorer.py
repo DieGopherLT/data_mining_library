@@ -1,4 +1,5 @@
 import os
+from ..exception import OutOfRange
 from .exception import FileExplorerDirectoryError
 
 class FileExplorer:
@@ -16,13 +17,20 @@ class FileExplorer:
 		if not self.__is_directory(directory):
 			FileExplorerDirectoryError(directory)
 
-		files = self.__get_files(directory)
+		ok = False 
+		while(ok == False):
 
-		print('Select a file: \n')
+			files = self.__get_files(directory)
+			print('Select a file: \n')
+			self.__print_file_preview(files)
+			file_index = int(input('Enter file index: '))	
 
-		self.__print_file_preview(files)
+			try:
+				OutOfRange(file_index, len(files))
+			except IndexError:
+				print(f'{file_index} is not a proper index of the files.')
+				continue
+			ok = True
 
-		file_index = int(input('Enter file index: '))	
 		file_name = files[file_index-1]
-
 		return f'{directory}{file_name}'
