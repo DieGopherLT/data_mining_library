@@ -3,5 +3,5 @@ from ..interface import DistanceCalculator
 
 class EuclidianDistanceCalculator(DistanceCalculator):
     
-    def caclulate(self):
+    def calculate(self):
         pass
