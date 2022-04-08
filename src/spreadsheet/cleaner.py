@@ -31,3 +31,16 @@ class SpreadsheetCleaner:
 			df[column] = df[column].astype(str).apply(lambda attr: attr.strip())
 		
 		return df
+
+	@staticmethod
+	def remove_categorical_columns(df: pd.DataFrame):
+		""" Removes categorical columns from a given dataset"""
+		df = df.copy()
+		columns = list(df)
+
+		for column in columns:
+			if df[column].dtypes != 'object':
+				continue
+			df.drop(columns=column, inplace=True)
+
+		return df
