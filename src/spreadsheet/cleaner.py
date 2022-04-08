@@ -11,7 +11,7 @@ class SpreadsheetCleaner:
 
 	def clean_column_names_whitespaces(self, df: pd.DataFrame):
 		""" Cleans whitespaces in column names """
-		df.copy()
+		df = df.copy()
 		columns = df.columns
 		
 		for column in columns:
